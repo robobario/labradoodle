@@ -16,8 +16,7 @@ function App() {
     const [contextMode, setContextMode] = useState(false)
 
     function update(example) {
-        const temp = examples.map(x => x)
-        temp[example.id] = example;
+        const temp = examples.map(x => x.id === example.id ? example : x)
         setExamples(temp);
     }
 
