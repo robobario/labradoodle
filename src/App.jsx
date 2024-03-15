@@ -6,11 +6,12 @@ import {stringify} from 'yaml'
 function App() {
     const [examples, setExamples] = useState([{
         "id": 0,
-        "question": "what is the time?",
-        "answer": "it is time for second breakfast"
+        "question": "Tell me a pun about birds.",
+        "answer": "Why do birds eat wood?\n\n    Because they're peckish!"
     }])
     const [active, setActive] = useState(0)
     const [createdBy, setCreatedBy] = useState("yourusername")
+    const [taskDescription, setTaskDescription] = useState("task description")
 
     function update(example) {
         const temp = examples.map(x => x)
@@ -19,7 +20,7 @@ function App() {
     }
 
     function yamlize() {
-        const to_write = {created_by: createdBy, task_description: ""}
+        const to_write = {created_by: createdBy, task_description: taskDescription}
         to_write["seed_examples"] = examples.map(value => {
             return {"question": value.question, "answer": value.answer}
         })
@@ -55,8 +56,15 @@ function App() {
         <>
             <div className="columns">
                 <div className="column is-half">
-                    <div hidden={!(examples.length < 5)}>Please supply at least 5 examples!</div>
+                    <div className="notification is-warning" hidden={!(examples.length < 5)}>Please supply at least 5 examples!</div>
+                    <div>
+                        <label>created by: </label>
                     <input value={createdBy} onChange={(e) => setCreatedBy(e.target.value)}/>
+                    </div>
+                    <div>
+                        <label>task description: </label>
+                        <input value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}/>
+                    </div>
                     {
                         examples.map(c => <Example key={c.id}
                                                 example={c}
