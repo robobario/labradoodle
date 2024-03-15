@@ -4,7 +4,7 @@ import Example from "./Example.jsx";
 import {stringify} from 'yaml'
 
 function App() {
-    const [count, setCount] = useState([{
+    const [examples, setExamples] = useState([{
         "id": 0,
         "question": "what is the time?",
         "answer": "it is time for second breakfast"
@@ -13,14 +13,14 @@ function App() {
     const [createdBy, setCreatedBy] = useState("yourusername")
 
     function update(example) {
-        const temp = count.map(x => x)
+        const temp = examples.map(x => x)
         temp[example.id] = example;
-        setCount(temp);
+        setExamples(temp);
     }
 
     function yamlize() {
         const to_write = {created_by: createdBy, task_description: ""}
-        to_write["seed_examples"] = count.map(value => {
+        to_write["seed_examples"] = examples.map(value => {
             return {"question": value.question, "answer": value.answer}
         })
         return stringify(to_write, {lineWidth: 110, defaultStringType: "QUOTE_DOUBLE"});
@@ -32,20 +32,20 @@ function App() {
     }
 
     function addExample() {
-        const temp = count.map(x => x)
-        let newId = Math.max(...count.map(x => x.id), 0) + 1;
+        const temp = examples.map(x => x)
+        let newId = Math.max(...examples.map(x => x.id), 0) + 1;
         temp.push({
             "id": newId,
             "question": "what is the time?",
             "answer": "it is time for second breakfast"
         })
-        setCount(temp);
+        setExamples(temp);
         setActive(newId)
     }
 
     function deleteExample(id) {
-        const temp = count.filter(x => x.id !== id)
-        setCount(temp);
+        const temp = examples.filter(x => x.id !== id)
+        setExamples(temp);
         if (active === id) {
             setActive(0)
         }
@@ -55,9 +55,10 @@ function App() {
         <>
             <div className="columns">
                 <div className="column is-half">
+                    <div hidden={!(examples.length < 5)}>Please supply at least 5 examples!</div>
                     <input value={createdBy} onChange={(e) => setCreatedBy(e.target.value)}/>
                     {
-                        count.map(c => <Example key={c.id}
+                        examples.map(c => <Example key={c.id}
                                                 example={c}
                                                 isActive={c.id === active}
                                                 onSelect={() => setActive(c.id)}
