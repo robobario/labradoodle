@@ -1,4 +1,4 @@
-function Example({example, onChange, isActive, onSelect, onDelete}) {
+function Example({example, onChange, isActive, onSelect, onDelete, isContextMode}) {
     return (
         <>
             <div className="box">
@@ -14,6 +14,16 @@ function Example({example, onChange, isActive, onSelect, onDelete}) {
                             tempState.question = event.target.value;
                             onChange(tempState)
                         }}></textarea>
+                        </div>
+                    </div>
+                    <div hidden={!isContextMode} className="field">
+                        <label className="label" htmlFor={"context-" + example.id}>Context: </label>
+                        <div className="control">
+              <textarea className="textarea" id={"context-" + example.id} value={example.context} onChange={(event) => {
+                  const tempState = {...example}
+                  tempState.context = event.target.value;
+                  onChange(tempState)
+              }}></textarea>
                         </div>
                     </div>
                     <div className="field">

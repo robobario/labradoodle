@@ -7,11 +7,13 @@ function App() {
     const [examples, setExamples] = useState([{
         "id": 0,
         "question": "Tell me a pun about birds.",
-        "answer": "Why do birds eat wood?\n\n    Because they're peckish!"
+        "answer": "Why do birds eat wood?\n\n    Because they're peckish!",
+        "context": "any old context"
     }])
     const [active, setActive] = useState(0)
     const [createdBy, setCreatedBy] = useState("yourusername")
     const [taskDescription, setTaskDescription] = useState("task description")
+    const [contextMode, setContextMode] = useState(false)
 
     function update(example) {
         const temp = examples.map(x => x)
@@ -22,7 +24,11 @@ function App() {
     function yamlize() {
         const to_write = {created_by: createdBy, task_description: taskDescription}
         to_write["seed_examples"] = examples.map(value => {
-            return {"question": value.question, "answer": value.answer}
+            let ex = {"question": value.question, "answer": value.answer};
+            if (contextMode) {
+                ex["context"] = value.context
+            }
+            return ex
         })
         return stringify(to_write, {lineWidth: 110, defaultStringType: "QUOTE_DOUBLE"});
     }
@@ -38,7 +44,8 @@ function App() {
         temp.push({
             "id": newId,
             "question": "what is the time?",
-            "answer": "it is time for second breakfast"
+            "answer": "it is time for second breakfast",
+            "context": "any old context"
         })
         setExamples(temp);
         setActive(newId)
@@ -65,13 +72,18 @@ function App() {
                         <label>task description: </label>
                         <input value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}/>
                     </div>
+                    <div>
+                        <label>context:</label>
+                        <input type="checkbox" value={contextMode} onChange={(e) => setContextMode(!contextMode)}/>
+                    </div>
                     {
                         examples.map(c => <Example key={c.id}
                                                 example={c}
                                                 isActive={c.id === active}
                                                 onSelect={() => setActive(c.id)}
                                                 onChange={(example) => update(example)}
-                                                onDelete={() => deleteExample(c.id)}/>)
+                                                onDelete={() => deleteExample(c.id)}
+                                                isContextMode={contextMode}/>)
                     }
                     <a
                         className="button"
